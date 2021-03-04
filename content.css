@@ -1,4 +1,4 @@
-.translation-ex-warp{
+.__chorme-extensions-easy-fanyi{
   position: fixed;
   max-width: 200px;
   padding: 10px;
@@ -8,8 +8,9 @@
   background: rgba(0,0,0,0.5);
   word-wrap: break-word;
   font-size: 12px;
+  z-index: 9999;
 }
-.translation-ex-warp p{
+.__chorme-extensions-easy-fanyi p{
   font-size: 12px;
   margin: 0 5px
 }

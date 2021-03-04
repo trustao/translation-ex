@@ -1,15 +1,16 @@
 var content,time,resloveFn
 
-main()
-
+setTimeout(() => {
+    main()
+})
 function main () {
     content = document.createElement('div')
-    content.className = "translation-ex-warp"
+    content.className = "__chorme-extensions-easy-fanyi"
     content.style.display = 'none'
     document.body.appendChild(content)
-    startTranslate()
     receiveMessage()
     stopProp()
+    sendMessage({data: '_CHECK_STATUS_'}).then(() => {})
 }
 
 function closeTranslate () {
@@ -19,6 +20,7 @@ function closeTranslate () {
 }
 
 function startTranslate () {
+    closeTranslate();
     document.addEventListener('mouseup', mouseupHandler)
     document.addEventListener('mousedown', mousedownHandler)
 }
@@ -36,8 +38,8 @@ function mouseupHandler (ev) {
     if (time && time < Date.now() - 300) {
         var txt = document.getSelection().toString();
         if (!txt.trim()) return
-        sendMessage({data: txt.trim()}).then(({basic, translation}) => {
-            showContent(ev, basic ? Object.assign(basic, {translation}) : translation)
+        sendMessage({data: txt.trim()}).then((msg) => {
+            showContent(ev, msg)
         })
     }
 }
@@ -47,14 +49,12 @@ function mousedownHandler (){
     time = Date.now()
 }
 
-function showContent (ev, info) {
-    if (Array.isArray(info) && info.length > 1) {
-        info = info.reduce(($0, $1, $2) => (1 + $2) + '、' + $0 + $1 + '<br/>', '')
-    }
-    if (info.toString() ===  "[object Object]") {
-        info = '<p> 发音：' + (info.phonetic || '') + '</p>' 
-        + info.explains.reduce(($0, $1, $2) => $0 + '<p>'+ $1 + '</p>', '')
-    }
+function showContent (ev, msg) {
+    const {form, to, trans_result} = msg;
+    let info = trans_result.reduce((res, item) => {
+        const {dst, src} = item; // dst 翻译 src 原文
+        return res + dst + '<br>'
+    }, '');
     var viewH = window.innerHeight
     var viewW = window.innerWidth
     var x = ev.clientX + 10
@@ -93,4 +93,36 @@ function receiveMessage () {
           resloveFn && resloveFn(request)
           resloveFn = null
         });
+}
+
+function treble (cb, sync) {
+    var timer = null
+    var complete = false
+    var count = 0
+    return function () {
+        if (complete) return
+        count++
+        clearTimeout(timer)
+        if (count === 3) {
+            complete = true
+            count = 0
+            if (sync) {
+                cb.apply(null, arguments)
+                complete = false
+            } else {
+                const res = cb.apply(null, arguments)
+                if (res instanceof Promise) {
+                    res.finally(() => {
+                        complete = false
+                    })
+                } else {
+                    throw new Error('回调应返回')
+                }
+            }
+            return
+        }
+        timer = setTimeout(() => {
+            count = 0
+        }, 200)
+    }
 }

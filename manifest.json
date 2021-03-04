@@ -1,11 +1,14 @@
 {
   "name": "translation-ex",
   "description" : "翻译插件 -- TR",
-  "version": "1.0",
+  "version": "1.1",
   "browser_action": {
     "default_popup": "popup.html",
     "default_icon": "avatar.png"
   },
+  "permissions": [
+    "storage"
+  ],
   "manifest_version": 2,
   "commands": {
     "_execute_browser_action": {

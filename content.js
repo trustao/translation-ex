@@ -70,7 +70,6 @@ function showContent (ev, msg) {
 }
 
 function sendMessage (data) {
-    console.log('content send message')
     return new Promise((reslove, reject) => {
         chrome.extension.sendRequest(data,function(response) {});
         resloveFn = reslove
@@ -80,13 +79,10 @@ function sendMessage (data) {
 function receiveMessage () {
     chrome.extension.onRequest.addListener(
         function(request, sender, sendResponse) {
-          console.log('receive message', request)
           if (request.action) {
               if (request.action === 'close') {
-                console.log('close')
                 closeTranslate()
               } else {
-                console.log('open')
                 startTranslate()
               }
           }

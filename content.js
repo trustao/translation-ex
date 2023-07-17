@@ -66,7 +66,7 @@ function showContent (ev, msg) {
     content.style.top = resY + 'px'
     content.style.left = resX + 'px'
     content.innerHTML = info
-    content.style.display = 'block'    
+    content.style.display = 'block'
 }
 
 function sendMessage (data) {

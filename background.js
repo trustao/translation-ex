@@ -35,27 +35,29 @@ function err(er) {
 }
 
 function sendRequest(text) {
-    var salt = Date.now()
-    var sign = setSign(text, salt)
-    var xhr = new XMLHttpRequest()
-    $.ajax({
-        url: PATH,
-        type: 'post',
-        data: {
-            q: text,
-            appid: appId,
-            salt: salt,
-            from: from,
-            to: to,
-            sign: sign
-        },
-        success: function (data) {
-            sendMessage(data);
-        },
-        fail: function () {
-            err('网络错误');
-        }
-    });
+    return new Promise((resolve, reject) => {
+        var salt = Date.now()
+        var sign = setSign(text, salt)
+        var xhr = new XMLHttpRequest()
+        $.ajax({
+            url: PATH,
+            type: 'post',
+            data: {
+                q: text,
+                appid: appId,
+                salt: salt,
+                from: from,
+                to: to,
+                sign: sign
+            },
+            success: function (data) {
+                resolve(data);
+            },
+            fail: function (ev) {
+                reject(ev);
+            }
+        });
+    })
 }
 
 function sendMessage(data) {
@@ -70,7 +72,7 @@ function receiveMessage() {
         if (request.data === '_CHECK_STATUS_') {
             sendMessage({action: open ? 'open' : 'close'})
         } else {
-            request.data && sendRequest(request.data)
+            request.data && sendRequest(request.data).then(data => sendMessage(data))
         }
     });
 }

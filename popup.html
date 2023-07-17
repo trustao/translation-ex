@@ -15,6 +15,10 @@
       h3{
         text-align: center;
       }
+      .t-result {
+          word-break: break-all;
+          white-space: break-spaces;
+      }
     </style>
     <script src="popup.js"></script>
   </head>
@@ -24,5 +28,13 @@
     <a href="javascript:;" id="open">开启</a>
     <a href="javascript:;" id="close">关闭</a>
     <div id="log"></div>
+    <div class="translate-input">
+      <textarea id="t-input"></textarea>
+    </div>
+    <a href="javascript:;" id="translate">翻译</a>
+    <div class="translate-result">
+      结果：
+      <div id="t-result"></div>
+    </div>
   </body>
 </html>
